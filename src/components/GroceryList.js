@@ -2,12 +2,11 @@ import React, { useState } from "react";
 
 export default function GroceryList() {
   const [groceryList, setGroceryList] = useState([]);
-
   const [newItem, setNewItem] = useState("");
-
   const [showList, setShowList] = useState(false);
 
-  const [updateItem, setUpdateItem] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   // handler function to set the newItem state
   const handleInputChange = (e) => {
@@ -16,21 +15,31 @@ export default function GroceryList() {
 
   // handler function to add the newItem to the groceryList
   const handleAddItem = () => {
-    setGroceryList([...groceryList, newItem]);
-    setNewItem("");
-  };
-
-  // handler function to update the newItem state
-  const handleUpdateItem = (e) => {
-    setNewItem(e.target.value);
+    if (editMode) {
+      const updatedList = [...groceryList];
+      updatedList[itemToEdit] = newItem;
+      setGroceryList(updatedList);
+      setEditMode(false);
+      setItemToEdit(null);
+      setNewItem("");
+    } else {
+      setGroceryList([...groceryList, newItem]);
+      setNewItem("");
+    }
   };
 
   // handler function to remove an item from the groceryList
-  const handleRemoveItem = (e) => {
-    const updatedGroceryList = groceryList.filter((item, index) => {
-      return index !== Number(e.target.id);
-    });
-    setGroceryList(updatedGroceryList);
+  const handleRemoveItem = (index) => {
+    const newList = [...groceryList];
+    newList.splice(index, 1);
+    setGroceryList(newList);
+  };
+
+  // handler function to update an item from the groceryList
+  const handleEditItem = (index) => {
+    setEditMode(true);
+    setItemToEdit(index);
+    setNewItem(groceryList[index]);
   };
 
   // handler function to toggle the showList state
@@ -47,21 +56,15 @@ export default function GroceryList() {
       {showList ? (
         <div>
           <input type="text" value={newItem} onChange={handleInputChange} />
-          <button onClick={handleAddItem}>Add Item</button>
+          <button onClick={handleAddItem}>{editMode ? "Edit" : "Add"}</button>
           <ul>
-            {groceryList.map((item, index) => {
-              return (
-                <li key={index}>
-                  {item}
-                  <button id={index} onClick={handleRemoveItem}>
-                    Remove
-                  </button>
-                  <button id={index} onClick={handleUpdateItem}>
-                    Update
-                  </button>
-                </li>
-              );
-            })}
+            {groceryList.map((item, index) => (
+              <li key={index}>
+                {item}
+                <button onClick={() => handleRemoveItem(index)}>Remove</button>
+                <button onClick={() => handleEditItem(index)}>Edit</button>
+              </li>
+            ))}
           </ul>
         </div>
       ) : null}
