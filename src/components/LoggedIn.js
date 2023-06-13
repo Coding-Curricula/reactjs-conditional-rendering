@@ -7,7 +7,6 @@ export default function LoggedIn() {
     <div>
       {isLoggedIn ? <h1>Welcome</h1> : <h1>Please Login</h1>}
       
-      
       <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
         {isLoggedIn ? "Logout" : "Login"}
       </button>
