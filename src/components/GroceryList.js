@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 
-export default function GroceryList() {
-  const [groceryList, setGroceryList] = useState([]);
+export default function GroceryList({ myList }) {
+  const [groceryList, setGroceryList] = useState(myList);
   const [newItem, setNewItem] = useState("");
   const [showList, setShowList] = useState(false);
 
   const [editMode, setEditMode] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
+
+  console.log("destructuring myList: ", myList)
 
   // handler function to set the newItem state
   const handleInputChange = (e) => {
